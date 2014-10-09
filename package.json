@@ -1,7 +1,7 @@
 {
   "name": "httpntlm-api",
   "description":"Eventually, this will be something.  Not likely useful to anyone else until at least v0.2.0.",
-  "version": "0.0.0",
+  "version": "0.0.3",
   "email":"rob.dooh@threestonestudios.com",
   "auth":"",
   "private": false,
@@ -9,7 +9,7 @@
     "httpntlm": "~1.3.0",
     "async": "~0.9.0",
     "httpreq": "~0.4.2",
-    "agentkeepalive": "~1.2.0"
+    "agentkeepalive": "~0.1.5"
   },
   "devDependencies": {
     "grunt": "~0.4.5",

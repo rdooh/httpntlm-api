@@ -1,17 +1,15 @@
-var HttpsAgent, async, httpreq, keepaliveAgent, ntlm;
-
-ntlm = require("httpntlm").ntlm;
+var async, httpreq, ntlm, url;
 
 async = require("async");
 
+url = require("url");
+
 httpreq = require("httpreq");
 
-HttpsAgent = require("agentkeepalive").HttpsAgent;
-
-keepaliveAgent = new HttpsAgent();
+ntlm = require("./../httpntlm/ntlm");
 
 exports.method = function(method, options, callback) {
-  var Agent, isHttps, reqUrl;
+  var Agent, HttpsAgent, isHttps, keepaliveAgent, reqUrl;
   if (!options.workstation) {
     options.workstation = "";
   }
@@ -35,7 +33,7 @@ exports.method = function(method, options, callback) {
     function($) {
       var type1msg;
       type1msg = ntlm.createType1Message(options);
-      return httpreq.get(options.url, {
+      httpreq.get(options.url, {
         headers: {
           Connection: "keep-alive",
           Authorization: type1msg
@@ -49,13 +47,12 @@ exports.method = function(method, options, callback) {
       }
       type2msg = ntlm.parseType2Message(res.headers["www-authenticate"]);
       type3msg = ntlm.createType3Message(type2msg, options);
-      return httpreq[method](options.url, {
+      httpreq[method](options.url, {
         headers: {
           Connection: "Close",
           Authorization: type3msg
         },
         allowRedirects: false,
-        parameters: options.params,
         agent: keepaliveAgent
       }, $);
     }
@@ -65,3 +62,5 @@ exports.method = function(method, options, callback) {
 ["get", "put", "post", "delete", "head"].forEach(function(method) {
   exports[method] = exports.method.bind(exports, method);
 });
+
+exports.ntlm = ntlm;

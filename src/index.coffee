@@ -1,22 +1,7 @@
-#======================================
-# !Require modules
-#======================================
-ntlm = require("httpntlm").ntlm
 async = require("async")
+url = require("url")
 httpreq = require("httpreq")
-HttpsAgent = require("agentkeepalive").HttpsAgent
-keepaliveAgent = new HttpsAgent()
-#======================================
-# End Require modules
-#======================================
-
-
-
-
-#======================================
-# !Main module
-#======================================
-
+ntlm = require("./../httpntlm/ntlm")
 exports.method = (method, options, callback) ->
   options.workstation = ""  unless options.workstation
   options.domain = ""  unless options.domain
@@ -44,6 +29,7 @@ exports.method = (method, options, callback) ->
 
         agent: keepaliveAgent
       , $
+      return
     (res, $) ->
       return $(new Error("www-authenticate not found on response of second request"))  unless res.headers["www-authenticate"]
       type2msg = ntlm.parseType2Message(res.headers["www-authenticate"])
@@ -54,10 +40,11 @@ exports.method = (method, options, callback) ->
           Authorization: type3msg
 
         allowRedirects: false
-        # !Added call for parameters
-        parameters: options.params
         agent: keepaliveAgent
+        # !Added: support for params
+        parameters: options.params
       , $
+      return
   ], callback
   return
 
@@ -71,8 +58,4 @@ exports.method = (method, options, callback) ->
   exports[method] = exports.method.bind(exports, method)
   return
 
-
-#======================================
-# End Main module
-#======================================
-
+exports.ntlm = ntlm #if you want to use the NTML functions yourself
