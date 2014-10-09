@@ -1,7 +1,7 @@
 {
   "name": "httpntlm-api",
   "description":"Eventually, this will be something.  Not likely useful to anyone else until at least v0.2.0.",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "email":"rob.dooh@threestonestudios.com",
   "auth":"",
   "private": false,

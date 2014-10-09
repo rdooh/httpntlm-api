@@ -1,7 +1,23 @@
+#======================================
+# !Require modules
+#======================================
+ntlm = require("httpntlm").ntlm
 async = require("async")
-url = require("url")
 httpreq = require("httpreq")
-ntlm = require("./../httpntlm/ntlm")
+HttpsAgent = require("agentkeepalive").HttpsAgent
+keepaliveAgent = new HttpsAgent()
+url = require("url")
+#======================================
+# End Require modules
+#======================================
+
+
+
+
+#======================================
+# !Main module
+#======================================
+
 exports.method = (method, options, callback) ->
   options.workstation = ""  unless options.workstation
   options.domain = ""  unless options.domain
@@ -40,9 +56,9 @@ exports.method = (method, options, callback) ->
           Authorization: type3msg
 
         allowRedirects: false
-        agent: keepaliveAgent
-        # !Added: support for params
+        # !Added call for parameters
         parameters: options.params
+        agent: keepaliveAgent
       , $
       return
   ], callback
@@ -58,4 +74,8 @@ exports.method = (method, options, callback) ->
   exports[method] = exports.method.bind(exports, method)
   return
 
-exports.ntlm = ntlm #if you want to use the NTML functions yourself
+
+#======================================
+# End Main module
+#======================================
+

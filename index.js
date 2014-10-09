@@ -1,15 +1,19 @@
-var async, httpreq, ntlm, url;
+var HttpsAgent, async, httpreq, keepaliveAgent, ntlm, url;
+
+ntlm = require("httpntlm").ntlm;
 
 async = require("async");
 
-url = require("url");
-
 httpreq = require("httpreq");
 
-ntlm = require("./../httpntlm/ntlm");
+HttpsAgent = require("agentkeepalive").HttpsAgent;
+
+keepaliveAgent = new HttpsAgent();
+
+url = require("url");
 
 exports.method = function(method, options, callback) {
-  var Agent, HttpsAgent, isHttps, keepaliveAgent, reqUrl;
+  var Agent, isHttps, reqUrl;
   if (!options.workstation) {
     options.workstation = "";
   }
@@ -53,6 +57,7 @@ exports.method = function(method, options, callback) {
           Authorization: type3msg
         },
         allowRedirects: false,
+        parameters: options.params,
         agent: keepaliveAgent
       }, $);
     }
@@ -62,5 +67,3 @@ exports.method = function(method, options, callback) {
 ["get", "put", "post", "delete", "head"].forEach(function(method) {
   exports[method] = exports.method.bind(exports, method);
 });
-
-exports.ntlm = ntlm;
